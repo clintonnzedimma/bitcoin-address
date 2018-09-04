@@ -6,6 +6,7 @@ const base58 = require('bs58');
 
 let Bitcoin = {};
 
+// Generate the key and address
 Bitcoin.createWalletAddress = (callback) => {
     let privateKey = Bitcoin.createPrivateKey();
     let hash = Bitcoin.generatePublicKeyHash(privateKey);
@@ -16,12 +17,18 @@ Bitcoin.createWalletAddress = (callback) => {
     });
 }
 
+// Create the private key 
 Bitcoin.createPrivateKey = () => {
     var keyPair = bitcoin.ECPair.makeRandom();
     let privateKey = keyPair.publicKey.toString('hex');
     return privateKey;
 }
 
+/**
+ * Generate the public key hash
+ * 
+ * @param {String} privateKey 
+ */
 Bitcoin.generatePublicKeyHash = privateKey => {
     const ecdsa = new ec('secp256k1'),
         keys = ecdsa.keyFromPrivate(privateKey),
@@ -32,6 +39,11 @@ Bitcoin.generatePublicKeyHash = privateKey => {
     return publicKeyHash;
 }
 
+/**
+ * Create a public address based on the hash
+ * 
+ * @param {String} publicKeyHash 
+ */
 Bitcoin.createPublicAddress = publicKeyHash => {
     // step 1 - add prefix "00" in hex
     const step1 = Buffer.from("00" + publicKeyHash.toString('hex'), 'hex');
